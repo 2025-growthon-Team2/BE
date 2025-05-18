@@ -5,7 +5,7 @@
 
 ```bash
 git clone https://github.com/2025-growthon-Team2/BE.git
-cd talentmatch-server
+cd BE
 ```
 
 ### 2. 실행(docker)
