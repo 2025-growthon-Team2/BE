@@ -10,4 +10,4 @@ COPY . .
 # 포트 지정 (예: 8080)
 EXPOSE 80
 
-CMD ["node", "src/index.js"]
+CMD ["npm", "start"]
