@@ -1,0 +1,27 @@
+{
+  "name": "talentmatch-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2025-growthon-Team2/BE.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2025-growthon-Team2/BE/issues"
+  },
+  "homepage": "https://github.com/2025-growthon-Team2/BE#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemailer": "^7.0.3"
+  }
+}
