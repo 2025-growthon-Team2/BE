@@ -33,16 +33,16 @@ exports.sendEmail = async (req, res) => {
   }
 };
 exports.verifyEmail = async (req, res) => {
-  const { AccessToken, code } = req.body;
-  if (!AccessToken || !code) return res.status(400).json({error: 'INVALID_REQUEST'});
-  const decode = jwt.verify(AccessToken,JWT_SECRET);
+  const { accessToken, code } = req.body;
+  if (!accessToken || !code) return res.status(400).json({error: 'INVALID_REQUEST'});
+  const decode = jwt.verify(accessToken,JWT_SECRET);
   const user = await User.findOne({providerId: decode.id});
   if(!user || !user.code || !user.expiresAt) {
-     return res.status(400).json({ error: 'NO_VERIFICATION_PENDING' });
+     return res.status(422).json({ error: 'NO_VERIFICATION_PENDING' });
   }
   const now = new Date();
   if(now > user.expiresAt) {
-    return res.status(410).json({ error: 'CODE_EXPIRED' });
+    return res.status(422).json({ error: 'CODE_EXPIRED' });
   }
   if (user.code !== inputCode) {
     return res.status(400).json({ error: 'INVALID_CODE' });
