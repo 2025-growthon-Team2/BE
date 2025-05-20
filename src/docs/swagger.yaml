@@ -103,6 +103,25 @@ paths:
       responses:
         '200':
           description: Access Token 발급 성공
-        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
           description: 재 로그인 필요
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                oneOf:
+                  - example:
+                      error: NO_REFRESH_TOKEN
+                  - example:
+                      error: INVALID_REFRESH_TOKEN
         
