@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const swaggerDocument = YAML.load('./src/docs/swagger.yaml');
 const authRoutes = require('./routes/auth');
 const { JAVASCRIPT_KEY, REDIRECT_URI } = require('./config/kakao');
+const { VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY } = require('./config/web-push');
 const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = 80;
@@ -22,7 +23,28 @@ async function main() {
   });
 }
 app.use('/api/auth', authRoutes);
+app.get('/service-worker.js', (req,res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.send(`self.addEventListener('push', function(event) {
+  let data = {};
+  try {
+    data = event.data?.json() || {};
+  } catch (e) {
+    console.error('푸시 데이터 파싱 실패:', e);
+  }
 
+  const title = data.title;
+  const body = data.body;
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body: body,
+      icon: '/icon.png', // 없으면 시스템 기본 아이콘 사용됨
+      requireInteraction: true // 사용자 클릭 전까지 안 사라짐 (옵션)
+    })
+  );
+});`);
+});
 app.get('/', (req, res) => {
   res.send(`<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6" crossorigin="anonymous"></script>
 
@@ -32,6 +54,9 @@ app.get('/', (req, res) => {
 
 <a id="kakao-login-btn" href="javascript:loginWithKakao()">
   <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222" alt="카카오 로그인 버튼" />
+</a>
+<a id="kakao-login-btn" href="javascript:subscribeUser()">
+allow push
 </a>
 <p id="token-result"></p>
 
@@ -66,6 +91,22 @@ app.get('/', (req, res) => {
     var parts = document.cookie.split(name + '=');
     if (parts.length === 2) { return parts[1].split(';')[0]; }
   }
+    async function subscribeUser() {
+  const register = await navigator.serviceWorker.register('/service-worker.js');
+  const subscription = await register.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: '${VAPID_PUBLIC_KEY}'
+  });
+  const accessToken = getCookie('accesstoken');
+  // 서버에 subscription 정보 전송
+  await fetch('/api/auth/subscription', {
+    method: 'POST',
+    body: JSON.stringify({accessToken,subscription}),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}
 </script>`);
 });
 

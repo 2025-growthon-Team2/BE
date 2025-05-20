@@ -46,7 +46,6 @@ paths:
                     error: INVALID_ACCESS_TOKEN
         '500':
           description: Internal server error - failed to send email
-
   /api/auth/email/verify:
     post:
       tags:
@@ -98,7 +97,38 @@ paths:
                 no_verification_pending:
                   value:
                     error: NO_VERIFICATION_PENDING
-
+  /api/auth/subscription:
+    post:
+      tags:
+        - Subscription
+      summary: 웹 알림 허용
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                subscription:
+                  type: object
+  /api/auth/sendpush:
+    post:
+      tags:
+        - Subscription
+      summary: 웹 알림 전송
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                text:
+                  type: string
   /api/auth/access-token:
     get:
       tags:

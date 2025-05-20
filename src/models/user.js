@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     emailVerified: { type: Boolean, default: false },
     code: { type: String },
     expiresAt: { type: Date },
-    subscription: { type: Boolean, default: false }
+    subscription: { type: Object, default: null },
 });
 
 module.exports = mongoose.model('User', userSchema);

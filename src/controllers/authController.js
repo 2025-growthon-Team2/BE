@@ -3,18 +3,20 @@ const { sendVerificationEmail } = require('../services/emailService');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const {JWT_SECRET} = require('../config/token');
+const {sendpush} = require('../services/webpush');
+
 exports.sendEmail = async (req, res) => {
-  const { AccessToken,email } = req.body;
-  if (!AccessToken || !email) return res.status(400).json({error: 'INVALID_REQUEST'});
+  const { accessToken,email } = req.body;
+  if (!accessToken || !email) return res.status(400).json({error: 'INVALID_REQUEST'});
   const schoolEmailRegex = /^[^\s@]+@[^\s@]+\.(ac\.kr|edu)$/
   if (!schoolEmailRegex.test(email)) {
     return res.status(400).json({error: 'INVALID_EMAIL'});
   }
+  const code = generateCode();
   try {
-    const decode = jwt.verify(AccessToken,JWT_SECRET);
+    const decode = jwt.verify(accessToken,JWT_SECRET);
     const user = await User.findOne({providerId: decode.id});
     if(!user) return res.status(400).json({error: 'INVALID_ACCESS_TOKEN'});
-    const code = generateCode();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
     await User.updateOne(
       {providerId: decode.id},
@@ -70,3 +72,24 @@ exports.accesstoken = async (req,res) => {
     return res.status(401).json({error:'INVALID_REFRESH_TOKEN'});
   }
 };
+exports.subscription = async (req,res) => {
+  const {accessToken,subscription} = req.body;
+  const decode = jwt.verify(accessToken,JWT_SECRET);
+  const user = await User.findOne({providerId: decode.id});
+  if(!user) return res.status(400).json({error: 'INVALID_ACCESS_TOKEN'});
+  user.subscription = subscription;
+  await user.save();
+  res.status(200).send();
+};
+exports.sendPush = async (req,res) => {
+  const {accessToken,text} = req.body;
+  const decode = jwt.verify(accessToken,JWT_SECRET);
+  const user = await User.findOne({providerId: decode.id});
+  if(!user) return res.status(400).json({error: 'INVALID_ACCESS_TOKEN'});
+  const payload = JSON.stringify({
+    title: '알림',
+    body: text
+  });
+  sendpush(user.subscription,payload);
+  res.status(200).send();
+}
