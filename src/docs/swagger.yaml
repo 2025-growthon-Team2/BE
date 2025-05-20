@@ -1,0 +1,108 @@
+openapi: 3.0.0
+info:
+  title: Gachitda API
+  version: 1.0.0
+
+paths:
+  /api/auth/email:
+    post:
+      tags:
+        - MailVerification
+      summary: 이메일 인증 요청
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccessToken:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Verification email sent successfully
+        '400':
+          description: Invalid request - missing or invalid AccessToken or email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                oneOf:
+                  - example:
+                      error: INVALID_REQUEST
+                  - example:
+                      error: INVALID_EMAIL
+                  - example:
+                      error: INVALID_ACCESS_TOKEN
+        '500':
+          description: Internal server error - failed to send email
+  /api/auth/email/verify:
+    post:
+      tags:
+        - MailVerification
+      summary: 이메일 인증 코드 확인
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccessToken:
+                  type: string
+                code:
+                  type: string
+      responses:
+        '200':
+          description: 인증 코드 확인 성공
+        '400':
+          description: Invalid request - missing or invalid AccessToken or code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                oneOf:
+                  - example:
+                      error: INVALID_REQUEST
+                  - example:
+                      error: NO_VERIFICATION_PENDING
+                  - example:
+                      error: INVALID_CODE
+        '410':
+          description: Expired request - too late
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                oneOf:
+                  - example:
+                      error: CODE_EXPIRED
+  /api/auth/access-token:
+    get:
+      tags:
+        - AccessToken
+      summary: Access Token 발급
+      parameters:
+        - in: header
+          name: Cookie
+          schema:
+            type: string
+          required: true
+          example: refreshtoken={token}
+      responses:
+        '200':
+          description: Access Token 발급 성공
+        '400':
+          description: 재 로그인 필요
+        

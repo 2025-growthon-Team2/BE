@@ -1,5 +1,10 @@
 version: '3'
 services:
+  mongo:
+    image: mongo:4.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
   talentmatch-server:
     build: .
     container_name: talentmatch-server
@@ -7,3 +12,7 @@ services:
       - "80:80"
     volumes:
       - .:/app
+    environment:
+      - NODE_ENV=${NODE_ENV}
+volumes:
+  mongo-data:
