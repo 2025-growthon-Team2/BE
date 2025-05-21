@@ -6,14 +6,24 @@ services:
     ports:
       - "27017:27017"
   talentmatch-server:
-    build: .
+    build:
+      context: ./server
     container_name: talentmatch-server
     ports:
       - "80:80"
     volumes:
-      - .:/app
-      - /app/node_modules
+      - ./server:/app
+      - node_modules:/app/node_modules
     environment:
       - NODE_ENV=${NODE_ENV}
+  talentmatch-debug:
+    build:
+      context: ./debug
+    container_name: talentmatch-debug
+    volumes:
+      - ./debug:/app
+      - debug_node_modules:/app/node_modules
 volumes:
   mongo-data:
+  node_modules:
+  debug_node_modules:
