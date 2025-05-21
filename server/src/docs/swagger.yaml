@@ -167,7 +167,7 @@ paths:
           schema:
             type: string
           required: true
-          example: refreshtoken=<token>
+          example: refreshtoken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDI2NzM3NDc0NywiaWF0IjoxNzQ3NzI3NzU4LCJleHAiOjE3NTAzMTk3NTh9.mCwFrDh6-tjQ4JxKAgUdtXV89Lp3FZ5sZbu4aiRP56E
       responses:
         '200':
           description: Access Token 발급 성공
