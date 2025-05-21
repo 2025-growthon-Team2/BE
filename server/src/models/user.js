@@ -10,6 +10,9 @@ const userSchema = new mongoose.Schema({
     code: { type: String },
     expiresAt: { type: Date },
     subscription: { type: Object, default: null },
+    role: { type: String },
+    writtenPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Talent' }],
+    appliedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Talent' }]
 });
 
 module.exports = mongoose.model('User', userSchema);

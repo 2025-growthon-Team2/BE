@@ -26,7 +26,7 @@ paths:
         '200':
           description: Verification email sent successfully
         '400':
-          description: Invalid request - missing or invalid accessToken or email
+          description: Invalid request - missing or invalid email
           content:
             application/json:
               schema:
@@ -41,6 +41,16 @@ paths:
                 invalid_email:
                   value:
                     error: INVALID_EMAIL
+        '401':
+          description: INVALID_ACCESS_TOKEN
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
@@ -66,7 +76,7 @@ paths:
         '200':
           description: 인증 코드 확인 성공
         '400':
-          description: Invalid request - missing or invalid accessToken or code
+          description: Invalid request - missing or invalid code
           content:
             application/json:
               schema:
@@ -78,9 +88,19 @@ paths:
                 invalid_request:
                   value:
                     error: INVALID_REQUEST
-                invalid_code:
+        '401':
+          description: INVALID_ACCESS_TOKEN
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                invalid_access_token:
                   value:
-                    error: INVALID_CODE
+                    error: INVALID_ACCESS_TOKEN
         '422':
           description: Verification code expired or no verification in progress
           content:
@@ -116,8 +136,8 @@ paths:
       responses:
         '200':
           description: 구독 저장 성공
-        '400':
-          description: 잘못된 액세스 토큰
+        '401':
+          description: INVALID_ACCESS_TOKEN
           content:
             application/json:
               schema:
@@ -125,8 +145,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: INVALID_ACCESS_TOKEN
-
+              examples:
+                invalid_access_token:
+                  value:
+                    error: INVALID_ACCESS_TOKEN
   /api/noti/sendpush:
     post:
       tags:
@@ -146,8 +168,8 @@ paths:
       responses:
         '200':
           description: 푸시 알림 전송 성공
-        '400':
-          description: 잘못된 액세스 토큰
+        '401':
+          description: INVALID_ACCESS_TOKEN
           content:
             application/json:
               schema:
@@ -155,7 +177,368 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: INVALID_ACCESS_TOKEN
+              examples:
+                invalid_access_token:
+                  value:
+                    error: INVALID_ACCESS_TOKEN
+  /api/user/me:
+    get:
+      tags:
+        - User
+      summary: 유저의 기본 정보
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+      responses:
+        '200':
+          description: 기본 정보
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nickname:
+                    type: string
+                  profileimage:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+                  subscription:
+                    type: boolean
+        '401':
+          description: INVALID_ACCESS_TOKEN
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                invalid_access_token:
+                  value:
+                    error: INVALID_ACCESS_TOKEN
+  /api/user/posts:
+    get:
+      tags:
+        - User
+        - Post
+      summary: 유저가 쓴/신청한 포스트 리스트
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+      responses:
+        '200':
+          description: 포스트 ID & 간단한 정보
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  writtenPosts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        postId:
+                          type: string
+                        category:
+                          type: string
+                        title:
+                          type: string
+                        shortDescription:
+                          type: string
+                        city:
+                          type: string
+                        district:
+                          type: string
+                        status:
+                          type: string
+                  appliedPosts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        postId:
+                          type: string
+                        writerName:
+                          type: string
+                        category:
+                          type: string
+                        title:
+                          type: string
+                        shortDescription:
+                          type: string
+                        city:
+                          type: string
+                        district:
+                          type: string
+                        status:
+                          type: string
+        '401':
+          description: INVALID_ACCESS_TOKEN
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                invalid_access_token:
+                  value:
+                    error: INVALID_ACCESS_TOKEN
+  /api/posts:
+    post:
+      summary: 글 작성
+      tags:
+        - Post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                title:
+                  type: string
+                category:
+                  type: string
+                shortDescription:
+                  type: string
+                detailedDescription:
+                  type: string
+                city:
+                  type: string
+                district:
+                  type: string
+      responses:
+        '201':
+          description: 글 작성 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: 생성된 글의 ID
+        '400':
+          description: 요청 형식 오류
+        '401':
+          description: 인증 실패 (토큰 없음 또는 만료)
+  /api/post/{postId}/apply:
+    post:
+      tags:
+        - Post
+      summary: 특정 글에 신청하기
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          description: 신청할 글의 postId
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+      responses:
+        '200':
+          description: 신청 성공
+        '401':
+          description: postId 또는 accessToken오류
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                invalid_postId:
+                  value:
+                    error: INVALID_POSTID
+                invalid_access_token:
+                  value:
+                    error: INVALID_ACCESS_TOKEN
+  /api/post/{postId}/match:
+    post:
+      tags:
+        - Post
+      summary: 매칭하기
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          description: 매칭할 글의 postId
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: 매칭 완료
+        '400':
+          description: 신청하지 않은 사용자가 포함됨
+        '401':
+          description: postId 또는 accessToken오류
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                invalid_postId:
+                  value:
+                    error: INVALID_POSTID
+                invalid_access_token:
+                  value:
+                    error: INVALID_ACCESS_TOKEN
+        '403':
+          description: 작성자 아님
+        '404':
+          description: 글 없음'
+  /api/post/{postId}:
+    get:
+      tags:
+        - Post
+      summary: 특정 글 상세 조회
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          description: 조회할 글의 postId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 글의 상세 정보
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  writerName:
+                    type: string
+                  writerProfileimage:
+                    type: string
+                  writerEmail:
+                    type: string
+                  appliedTalents:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                        nickname:
+                          type: string
+                        Profileimage:
+                          type: string
+                        email:
+                          type: string
+                  matchedTalents:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                        nickname:
+                          type: string
+                        Profileimage:
+                          type: string
+                        email:
+                          type: string
+                  category:
+                    type: string
+                  title:
+                    type: string
+                  detailedDescription:
+                    type: string
+                  city:
+                    type: string
+                  district:
+                    type: string
+                  status:
+                    type: string
+        '401':
+          description: INVALID_POSTID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                invalid_postId:
+                  value:
+                    error: INVALID_POSTID
+  /api/posts:
+    get:
+      tags:
+        - Post
+      summary: 모든 글 리스트
+      responses:
+        '200':
+          description: 모든 글의 간단한 정보 & postId
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    postId:
+                      type: string
+                    writerName:
+                      type: string
+                    category:
+                      type: string
+                    title:
+                      type: string
+                    shortDescription:
+                      type: string
+                    city:
+                      type: string
+                    district:
+                      type: string
+                    status:
+                      type: string
   /api/auth/access-token:
     get:
       tags:
