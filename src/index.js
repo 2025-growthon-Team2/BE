@@ -3,49 +3,62 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const swaggerDocument = YAML.load('./src/docs/swagger.yaml');
+const swaggerDocument = YAML.load('./src/docs/swagger.yaml');//스웨거파일 위치
 const authRoutes = require('./routes/auth');
+const notiRoutes = require('./routes/noti');
 const { JAVASCRIPT_KEY, REDIRECT_URI } = require('./config/kakao');
 const { VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY } = require('./config/web-push');
 const cookieParser = require('cookie-parser');
+
 const app = express();
-const PORT = 80;
+const PORT = 80;//포트
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));//스웨거 세팅
 app.use(cors());
 app.use(cookieParser());
 async function main() {
-  await mongoose.connect("mongodb://mongo:27017");
+  await mongoose.connect("mongodb://mongo:27017");//db연결(도커 사용)
   app.listen(PORT, '0.0.0.0', async () => {
     console.log(`HTTPS server running at https://localhost:${PORT}`);
   });
 }
-app.use('/api/auth', authRoutes);
-app.get('/service-worker.js', (req,res) => {
+app.use('/api/auth', authRoutes);//라우터 사용
+app.use('/api/noti', notiRoutes);
+app.get('/service-worker.js', (req, res) => {//웹 알림용 js파일 전송
   res.setHeader('Content-Type', 'application/javascript');
-  res.send(`self.addEventListener('push', function(event) {
+  res.send(`
+self.addEventListener('push', function(event) {
+  console.log('[SW] push 수신됨');
+  console.log('[SW] event.data:', event.data);
+  console.log('[SW] event.data?.text():', event.data?.text?.());
+
   let data = {};
   try {
     data = event.data?.json() || {};
   } catch (e) {
-    console.error('푸시 데이터 파싱 실패:', e);
+    console.error('[SW] JSON 파싱 실패:', e);
   }
 
-  const title = data.title;
-  const body = data.body;
+  console.log('[SW] 파싱된 데이터:', data);
+
+  const title = data.title || '제목 없음';
+  const body = data.body || '내용 없음';
 
   event.waitUntil(
     self.registration.showNotification(title, {
-      body: body,
-      icon: '/icon.png', // 없으면 시스템 기본 아이콘 사용됨
-      requireInteraction: true // 사용자 클릭 전까지 안 사라짐 (옵션)
+      body,
+      icon: '/icon.png',
+      requireInteraction: true
     })
   );
-});`);
 });
-app.get('/', (req, res) => {
+
+  console.log('실행됨');
+  `);
+});
+app.get('/', (req, res) => {//로그인 테스트를 위한 html코드 전송
   res.send(`<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6" crossorigin="anonymous"></script>
 
 <script>
@@ -99,7 +112,7 @@ allow push
   });
   const accessToken = getCookie('accesstoken');
   // 서버에 subscription 정보 전송
-  await fetch('/api/auth/subscription', {
+  await fetch('/api/noti/subscription', {
     method: 'POST',
     body: JSON.stringify({accessToken,subscription}),
     headers: {

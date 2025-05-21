@@ -1,3 +1,5 @@
+//메일 관련 정보 관리
+
 const nodemailer = require('nodemailer');
 
 const email = 'gachitda@gmail.com';

@@ -1,3 +1,5 @@
+//이메일 전송 함수
+
 const { transporter, email } = require('../config/mailer');
 
 exports.sendVerificationEmail = (targetEmail, code) => {

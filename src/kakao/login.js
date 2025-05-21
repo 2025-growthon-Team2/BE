@@ -1,3 +1,5 @@
+//카카오 로그인 함수
+
 const axios = require('axios');
 const { REDIRECT_URI,REST_API_KEY } = require('../config/kakao');
 const User = require('../models/user');

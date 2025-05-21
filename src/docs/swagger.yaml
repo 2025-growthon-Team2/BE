@@ -97,7 +97,7 @@ paths:
                 no_verification_pending:
                   value:
                     error: NO_VERIFICATION_PENDING
-  /api/auth/subscription:
+  /api/noti/subscription:
     post:
       tags:
         - Subscription
@@ -113,7 +113,21 @@ paths:
                   type: string
                 subscription:
                   type: object
-  /api/auth/sendpush:
+      responses:
+        '200':
+          description: 구독 저장 성공
+        '400':
+          description: 잘못된 액세스 토큰
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: INVALID_ACCESS_TOKEN
+
+  /api/noti/sendpush:
     post:
       tags:
         - Subscription
@@ -129,6 +143,19 @@ paths:
                   type: string
                 text:
                   type: string
+      responses:
+        '200':
+          description: 푸시 알림 전송 성공
+        '400':
+          description: 잘못된 액세스 토큰
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: INVALID_ACCESS_TOKEN
   /api/auth/access-token:
     get:
       tags:

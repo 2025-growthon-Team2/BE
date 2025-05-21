@@ -1,3 +1,5 @@
+//db에 저장될 유저 정보 리스트
+
 const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     providerId: { type: String, required: true },

@@ -1,3 +1,5 @@
+//웹 알림을 위한 KEY값
+
 const VAPID_PUBLIC_KEY = 'BMyqJtODNQJvIBeyr5LDYDXZ4hFMKLN9FduixkFCcSyHgE0b8bm4n2i17HwwxJloqgsBXsr6jaNxLy-qXCJn4BY';
 const VAPID_PRIVATE_KEY = 'pvU1ZqevKiHodl72ZKkHS6Imnd-w0yFG_DaDICPPdKo';
 

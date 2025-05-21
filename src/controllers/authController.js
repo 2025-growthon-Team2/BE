@@ -1,9 +1,10 @@
+//인증 관련 api정리
+
 const generateCode = require('../utils/generateCode');
 const { sendVerificationEmail } = require('../services/emailService');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const {JWT_SECRET} = require('../config/token');
-const {sendpush} = require('../services/webpush');
+const {JWT_SECRET,JWT_SECRET2} = require('../config/token');
 
 exports.sendEmail = async (req, res) => {
   const { accessToken,email } = req.body;
@@ -14,7 +15,7 @@ exports.sendEmail = async (req, res) => {
   }
   const code = generateCode();
   try {
-    const decode = jwt.verify(accessToken,JWT_SECRET);
+    const decode = jwt.verify(accessToken,JWT_SECRET2);
     const user = await User.findOne({providerId: decode.id});
     if(!user) return res.status(400).json({error: 'INVALID_ACCESS_TOKEN'});
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
@@ -37,7 +38,7 @@ exports.sendEmail = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
   const { accessToken, code } = req.body;
   if (!accessToken || !code) return res.status(400).json({error: 'INVALID_REQUEST'});
-  const decode = jwt.verify(accessToken,JWT_SECRET);
+  const decode = jwt.verify(accessToken,JWT_SECRET2);
   const user = await User.findOne({providerId: decode.id});
   if(!user || !user.code || !user.expiresAt) {
      return res.status(422).json({ error: 'NO_VERIFICATION_PENDING' });
@@ -64,7 +65,7 @@ exports.accesstoken = async (req,res) => {
   try {
     const decode = jwt.verify(refreshtoken,JWT_SECRET);
     const user = await User.findOne({providerId: decode.id});
-    const accessToken = jwt.sign({id: user.providerId}, JWT_SECRET, {
+    const accessToken = jwt.sign({id: user.providerId}, JWT_SECRET2, {
       expiresIn: '1h'
     });
     return res.json({token: accessToken});
@@ -72,24 +73,3 @@ exports.accesstoken = async (req,res) => {
     return res.status(401).json({error:'INVALID_REFRESH_TOKEN'});
   }
 };
-exports.subscription = async (req,res) => {
-  const {accessToken,subscription} = req.body;
-  const decode = jwt.verify(accessToken,JWT_SECRET);
-  const user = await User.findOne({providerId: decode.id});
-  if(!user) return res.status(400).json({error: 'INVALID_ACCESS_TOKEN'});
-  user.subscription = subscription;
-  await user.save();
-  res.status(200).send();
-};
-exports.sendPush = async (req,res) => {
-  const {accessToken,text} = req.body;
-  const decode = jwt.verify(accessToken,JWT_SECRET);
-  const user = await User.findOne({providerId: decode.id});
-  if(!user) return res.status(400).json({error: 'INVALID_ACCESS_TOKEN'});
-  const payload = JSON.stringify({
-    title: '알림',
-    body: text
-  });
-  sendpush(user.subscription,payload);
-  res.status(200).send();
-}
