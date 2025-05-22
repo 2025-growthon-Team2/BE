@@ -69,7 +69,7 @@ exports.verifyEmail = async (req, res) => {
   if(now > user.expiresAt) {
     return res.status(422).json({ error: 'CODE_EXPIRED' });
   }
-  if (user.code !== inputCode) {
+  if (user.code !== code) {
     return res.status(400).json({ error: 'INVALID_CODE' });
   }
   user.emailVerified = true;
