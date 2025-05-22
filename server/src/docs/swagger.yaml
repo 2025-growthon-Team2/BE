@@ -55,6 +55,12 @@ paths:
                   error:
                     type: string
               examples:
+                missing_authorization_header:
+                  value:
+                    error: MISSING_AUTHORIZATION_HEADER
+                invalid_authorization_format:
+                  value:
+                    error: INVALID_AUTHORIZATION_FORMAT
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
@@ -100,6 +106,12 @@ paths:
                   error:
                     type: string
               examples:
+                missing_authorization_header:
+                  value:
+                    error: MISSING_AUTHORIZATION_HEADER
+                invalid_authorization_format:
+                  value:
+                    error: INVALID_AUTHORIZATION_FORMAT
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
@@ -146,6 +158,12 @@ paths:
                   error:
                     type: string
               examples:
+                missing_authorization_header:
+                  value:
+                    error: MISSING_AUTHORIZATION_HEADER
+                invalid_authorization_format:
+                  value:
+                    error: INVALID_AUTHORIZATION_FORMAT
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
@@ -176,6 +194,12 @@ paths:
                   error:
                     type: string
               examples:
+                missing_authorization_header:
+                  value:
+                    error: MISSING_AUTHORIZATION_HEADER
+                invalid_authorization_format:
+                  value:
+                    error: INVALID_AUTHORIZATION_FORMAT
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
@@ -212,6 +236,12 @@ paths:
                   error:
                     type: string
               examples:
+                missing_authorization_header:
+                  value:
+                    error: MISSING_AUTHORIZATION_HEADER
+                invalid_authorization_format:
+                  value:
+                    error: INVALID_AUTHORIZATION_FORMAT
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
@@ -241,8 +271,8 @@ paths:
                     type: string
                   email:
                     type: string
-        '401':
-          description: INVALID_ACCESS_TOKEN
+        '400':
+          description: INVALID_USERID
           content:
             application/json:
               schema:
@@ -251,9 +281,9 @@ paths:
                   error:
                     type: string
               examples:
-                invalid_access_token:
+                INVALID_USERID:
                   value:
-                    error: INVALID_ACCESS_TOKEN
+                    error: INVALID_USERID
   /api/user/posts:
     get:
       tags:
@@ -281,12 +311,18 @@ paths:
                           type: string
                         shortDescription:
                           type: string
-                        city:
-                          type: string
-                        district:
+                        appliedTalents:
+                          type: integer
+                        address:
                           type: string
                         status:
                           type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        teachAt:
+                          type: string
+                          format: date-time
                   appliedPosts:
                     type: array
                     items:
@@ -302,12 +338,16 @@ paths:
                           type: string
                         shortDescription:
                           type: string
-                        city:
-                          type: string
-                        district:
+                        address:
                           type: string
                         status:
                           type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        teachAt:
+                          type: string
+                          format: date-time
         '401':
           description: INVALID_ACCESS_TOKEN
           content:
@@ -318,6 +358,12 @@ paths:
                   error:
                     type: string
               examples:
+                missing_authorization_header:
+                  value:
+                    error: MISSING_AUTHORIZATION_HEADER
+                invalid_authorization_format:
+                  value:
+                    error: INVALID_AUTHORIZATION_FORMAT
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
@@ -341,10 +387,11 @@ paths:
                   type: string
                 detailedDescription:
                   type: string
-                city:
+                address:
                   type: string
-                district:
+                teachAt:
                   type: string
+                  format: date-time
       responses:
         '201':
           description: 글 작성 성공
@@ -353,13 +400,41 @@ paths:
               schema:
                 type: object
                 properties:
-                  _id:
+                  postId:
                     type: string
                     description: 생성된 글의 ID
         '400':
-          description: 요청 형식 오류
+          description: MISSING_REQUIRED_FIELDS
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                MISSING_REQUIRED_FIELDS:
+                  value:
+                    error: MISSING_REQUIRED_FIELDS
         '401':
-          description: 인증 실패 (토큰 없음 또는 만료)
+          description: INVALID_ACCESS_TOKEN
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                missing_authorization_header:
+                  value:
+                    error: MISSING_AUTHORIZATION_HEADER
+                invalid_authorization_format:
+                  value:
+                    error: INVALID_AUTHORIZATION_FORMAT
+                invalid_access_token:
+                  value:
+                    error: INVALID_ACCESS_TOKEN
   /api/post/{postId}/apply:
     post:
       tags:
@@ -375,8 +450,8 @@ paths:
       responses:
         '200':
           description: 신청 성공
-        '401':
-          description: postId 또는 accessToken오류
+        '400':
+          description: postId오류
           content:
             application/json:
               schema:
@@ -388,6 +463,16 @@ paths:
                 invalid_postId:
                   value:
                     error: INVALID_POSTID
+        '401':
+          description: accessToken오류
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
@@ -416,9 +501,7 @@ paths:
         '200':
           description: 매칭 완료
         '400':
-          description: 신청하지 않은 사용자가 포함됨
-        '401':
-          description: postId 또는 accessToken오류
+          description: 입력값 오류
           content:
             application/json:
               schema:
@@ -430,13 +513,26 @@ paths:
                 invalid_postId:
                   value:
                     error: INVALID_POSTID
+                invalid_userId:
+                  value:
+                    error: INVALID_USERID
+        '401':
+          description: accessToken오류
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
         '403':
           description: 작성자 아님
         '404':
-          description: 글 없음'
+          description: 글 없음
   /api/post/{postId}:
     get:
       tags:
@@ -459,7 +555,7 @@ paths:
                 properties:
                   writerName:
                     type: string
-                  writerProfileimage:
+                  writerprofileimage:
                     type: string
                   writerEmail:
                     type: string
@@ -472,7 +568,7 @@ paths:
                           type: string
                         nickname:
                           type: string
-                        Profileimage:
+                        profileimage:
                           type: string
                         email:
                           type: string
@@ -485,7 +581,7 @@ paths:
                           type: string
                         nickname:
                           type: string
-                        Profileimage:
+                        profileimage:
                           type: string
                         email:
                           type: string
@@ -495,13 +591,17 @@ paths:
                     type: string
                   detailedDescription:
                     type: string
-                  city:
-                    type: string
-                  district:
+                  address:
                     type: string
                   status:
                     type: string
-        '401':
+                  createdAt:
+                    type: string
+                    format: date-time
+                  teachAt:
+                    type: string
+                    format: date-time
+        '400':
           description: INVALID_POSTID
           content:
             application/json:
@@ -531,7 +631,7 @@ paths:
                   properties:
                     postId:
                       type: string
-                    writerName:
+                    writerId:
                       type: string
                     category:
                       type: string
@@ -539,12 +639,18 @@ paths:
                       type: string
                     shortDescription:
                       type: string
-                    city:
-                      type: string
-                    district:
+                    appliedTalents:
+                      type: integer
+                    address:
                       type: string
                     status:
                       type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    teachAt:
+                      type: string
+                      format: date-time
   /api/auth/access-token:
     get:
       tags:

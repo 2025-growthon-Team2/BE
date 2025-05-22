@@ -7,9 +7,12 @@ const swaggerDocument = YAML.load('./src/docs/swagger.yaml');//스웨거파일 �
 const authRoutes = require('./routes/auth');
 const notiRoutes = require('./routes/noti');
 const userRoutes = require('./routes/user');
+const postRoutes = require('./routes/post');
 const { JAVASCRIPT_KEY, REDIRECT_URI } = require('./config/kakao');
 const { VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY } = require('./config/web-push');
+const { newpost,applypost,matchpost,thispost,allposts } = require('./controllers/postController');
 const cookieParser = require('cookie-parser');
+
 
 const app = express();
 const PORT = 80;//포트
@@ -19,6 +22,7 @@ app.use(express.static('public'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));//스웨거 세팅
 app.use(cors());
 app.use(cookieParser());
+app.get('/api/posts', allposts);
 async function main() {
   await mongoose.connect("mongodb://mongo:27017");//db연결(도커 사용)
   app.listen(PORT, '0.0.0.0', async () => {
@@ -28,6 +32,7 @@ async function main() {
 app.use('/api/auth', authRoutes);//라우터 사용
 app.use('/api/noti', notiRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/post', postRoutes);
 app.get('/service-worker.js', (req, res) => {//웹 알림용 js파일 전송
   res.setHeader('Content-Type', 'application/javascript');
   res.send(`

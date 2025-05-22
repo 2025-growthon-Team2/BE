@@ -1,25 +1,23 @@
 //유저 정보 관련 api정의
 
 const User = require('../models/user');
+const Post = require('../models/talent');
 const jwt = require('jsonwebtoken');
 const {JWT_SECRET,JWT_SECRET2} = require('../config/token');
 
 exports.myinfo = async (req,res) => {
   const authHeader = req.headers.authorization;
-
   if (!authHeader) {
-    return res.status(401).json({ message: 'Authorization header missing' });
+    return res.status(401).json({ error: 'MISSING_AUTHORIZATION_HEADER' });
   }
-
   const [type, accessToken] = authHeader.split(' ');
-
   if (type !== 'Bearer' || !accessToken) {
-    return res.status(401).json({ message: 'Invalid Authorization format' });
+    return res.status(401).json({ error: 'INVALID_AUTHORIZATION_FORMAT' });
   }
   try {
     const decode = jwt.verify(accessToken,JWT_SECRET2);
     const user = await User.findOne({providerId: decode.id});
-    if(!user) return res.status(400).json({error: 'INVALID_ACCESS_TOKEN'});
+    if(!user) return res.status(401).json({error: 'INVALID_ACCESS_TOKEN'});
     res.status(200).json({
       nickname: user.nickname,
       profileimage: user.profileimage,
@@ -28,6 +26,67 @@ exports.myinfo = async (req,res) => {
       subscription: user.subscription != null
     });
   } catch (error) {
-    return res.status(400).json({error:'INVALID_ACCESS_TOKEN'});
+    return res.status(401).json({error:'INVALID_ACCESS_TOKEN'});
+  }
+};
+exports.userdata = async (req,res) => {
+  const userId = req.params.userId;
+  try {
+    const user = await User.findById(userId);
+    if(!user) return res.status(400).json({error: 'INVALID_USERID'});
+    res.status(200).json({
+      nickname: user.nickname,
+      profileimage: user.profileimage,
+      email: user.email,
+    });
+  } catch (error) {
+    return res.status(400).json({error:'INVALID_USERID'});
+  }
+};
+exports.myposts = async (req,res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ error: 'MISSING_AUTHORIZATION_HEADER' });
+  }
+  const [type, accessToken] = authHeader.split(' ');
+  if (type !== 'Bearer' || !accessToken) {
+    return res.status(401).json({ error: 'INVALID_AUTHORIZATION_FORMAT' });
+  }
+  try {
+    const decode = jwt.verify(accessToken,JWT_SECRET2);
+    const user = await User.findOne({providerId: decode.id});
+    if(!user) return res.status(401).json({error: 'INVALID_ACCESS_TOKEN'});
+    const writtenPosts = [];
+    const appliedPosts = [];
+    user.writtenPosts.forEach(async postId => {
+        const post = await Post.findById(postId);
+        writtenPosts.push({
+            postId,
+            category: post.category, 
+            title: post.title,
+            shortDescription: post.shortDescription,
+            appliedTalents: post.appliedTalents.length,
+            address: post.address,
+            status: post.status,
+            createdAt: post.createdAt,
+            teachAt: post.teachAt
+        });
+    });
+    user.appliedPosts.forEach(async postId => {
+        const post = await Post.findById(postId);
+        appliedPosts.push({
+            postId,
+            category: post.category, 
+            title: post.title,
+            shortDescription: post.shortDescription,
+            address: post.address,
+            status: post.status,
+            createdAt: post.createdAt,
+            teachAt: post.teachAt
+        });
+    });
+    res.status(200).json({writtenPosts,appliedPosts});
+  } catch (error) {
+    return res.status(401).json({error:'INVALID_ACCESS_TOKEN'});
   }
 };

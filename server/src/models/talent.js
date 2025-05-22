@@ -7,9 +7,10 @@ const talentSchema = new mongoose.Schema({
     title: {type: String, required: true},
     shortDescription: { type: String, required: true },
     detailedDescription: { type: String, required: true },
-    city: { type: String, required: true },
-    district: { type: String, required: true },
-    status: {type: String, required: true}
+    address: { type: String, required: true },
+    status: {type: String},
+    createdAt: {type: Date, required: true},
+    teachAt: {type: Date, required: true}
 });
 
 module.exports = mongoose.model('Talent', talentSchema);

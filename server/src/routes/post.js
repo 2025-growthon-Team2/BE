@@ -2,7 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const { subscription,sendPush } = require('../controllers/notiController');
-router.post('/subscription', subscription);
-router.post('/sendpush', sendPush);
+const { newpost,applypost,matchpost,thispost,allposts } = require('../controllers/postController');
+router.post('/', newpost);
+router.post('/:postId/apply', applypost);
+router.post('/:postId/match', matchpost);
+router.get('/:postId', thispost);
 module.exports = router;

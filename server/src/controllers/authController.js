@@ -11,13 +11,13 @@ exports.sendEmail = async (req, res) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({ message: 'Authorization header missing' });
+    return res.status(401).json({ error: 'MISSING_AUTHORIZATION_HEADER' });
   }
 
   const [type, accessToken] = authHeader.split(' ');
 
   if (type !== 'Bearer' || !accessToken) {
-    return res.status(401).json({ message: 'Invalid Authorization format' });
+    return res.status(401).json({ error: 'INVALID_AUTHORIZATION_FORMAT' });
   }
   if (!accessToken || !email) return res.status(400).json({error: 'INVALID_REQUEST'});
   const schoolEmailRegex = /^[^\s@]+@[^\s@]+\.(ac\.kr|edu)$/
@@ -51,13 +51,13 @@ exports.verifyEmail = async (req, res) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({ message: 'Authorization header missing' });
+    return res.status(401).json({ error: 'MISSING_AUTHORIZATION_HEADER' });
   }
 
   const [type, accessToken] = authHeader.split(' ');
 
   if (type !== 'Bearer' || !accessToken) {
-    return res.status(401).json({ message: 'Invalid Authorization format' });
+    return res.status(401).json({ error: 'INVALID_AUTHORIZATION_FORMAT' });
   }
   if (!accessToken || !code) return res.status(400).json({error: 'INVALID_REQUEST'});
   const decode = jwt.verify(accessToken,JWT_SECRET2);
