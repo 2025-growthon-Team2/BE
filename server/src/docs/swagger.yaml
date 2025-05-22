@@ -64,6 +64,19 @@ paths:
                 invalid_access_token:
                   value:
                     error: INVALID_ACCESS_TOKEN
+        '409':
+          description: EMAIL_ALREADY_CONNECTED
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                EMAIL_ALREADY_CONNECTED:
+                  value:
+                    error: EMAIL_ALREADY_CONNECTED
         '500':
           description: Internal server error - failed to send email
   /api/auth/email/verify:
