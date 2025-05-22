@@ -54,7 +54,8 @@ exports.kakaoLogin = async (req, res) => {
                 emailVerified: false,
                 code: null,
                 expiresAt: null,
-                subscription: false
+                subscription: false,
+                role: null
             });
             await newUser.save();
         }
@@ -69,7 +70,7 @@ exports.kakaoLogin = async (req, res) => {
             secure: false // HTTPS 환경에서는 true로 설정
         });
         // 로그인 성공 후 리다이렉트
-        res.redirect(`https://gachitda.corexaen.com`);
+        res.redirect(`/redirect`);
 
     } catch (err) {
         console.error(err);
