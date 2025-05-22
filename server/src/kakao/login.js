@@ -67,7 +67,8 @@ exports.kakaoLogin = async (req, res) => {
         res.cookie('refreshtoken', refresh_token, {
             maxAge: 1000 * 60 * 60 * 24 * 30, // 30일
             httpOnly: true,
-            secure: false // HTTPS 환경에서는 true로 설정
+            secure: true, // HTTPS 환경에서는 true로 설정
+            sameSite: 'None'
         });
         // 로그인 성공 후 리다이렉트
         res.redirect(`/redirect`);
