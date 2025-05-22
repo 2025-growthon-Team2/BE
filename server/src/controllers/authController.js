@@ -7,7 +7,18 @@ const jwt = require('jsonwebtoken');
 const {JWT_SECRET,JWT_SECRET2} = require('../config/token');
 
 exports.sendEmail = async (req, res) => {
-  const { accessToken,email } = req.body;
+  const { email } = req.body;
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Authorization header missing' });
+  }
+
+  const [type, accessToken] = authHeader.split(' ');
+
+  if (type !== 'Bearer' || !accessToken) {
+    return res.status(401).json({ message: 'Invalid Authorization format' });
+  }
   if (!accessToken || !email) return res.status(400).json({error: 'INVALID_REQUEST'});
   const schoolEmailRegex = /^[^\s@]+@[^\s@]+\.(ac\.kr|edu)$/
   if (!schoolEmailRegex.test(email)) {
@@ -36,7 +47,18 @@ exports.sendEmail = async (req, res) => {
   }
 };
 exports.verifyEmail = async (req, res) => {
-  const { accessToken, code } = req.body;
+  const { code } = req.body;
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Authorization header missing' });
+  }
+
+  const [type, accessToken] = authHeader.split(' ');
+
+  if (type !== 'Bearer' || !accessToken) {
+    return res.status(401).json({ message: 'Invalid Authorization format' });
+  }
   if (!accessToken || !code) return res.status(400).json({error: 'INVALID_REQUEST'});
   const decode = jwt.verify(accessToken,JWT_SECRET2);
   const user = await User.findOne({providerId: decode.id});

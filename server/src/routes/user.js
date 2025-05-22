@@ -2,5 +2,6 @@
 
 const express = require('express');
 const router = express.Router();
-
+const { myinfo } = require('../controllers/userController');
+router.get('/', myinfo);
 module.exports = router;

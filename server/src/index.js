@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const swaggerDocument = YAML.load('./src/docs/swagger.yaml');//스웨거파일 위치
 const authRoutes = require('./routes/auth');
 const notiRoutes = require('./routes/noti');
+const userRoutes = require('./routes/user');
 const { JAVASCRIPT_KEY, REDIRECT_URI } = require('./config/kakao');
 const { VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY } = require('./config/web-push');
 const cookieParser = require('cookie-parser');
@@ -26,6 +27,7 @@ async function main() {
 }
 app.use('/api/auth', authRoutes);//라우터 사용
 app.use('/api/noti', notiRoutes);
+app.use('/api/user', userRoutes);
 app.get('/service-worker.js', (req, res) => {//웹 알림용 js파일 전송
   res.setHeader('Content-Type', 'application/javascript');
   res.send(`
