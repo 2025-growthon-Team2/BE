@@ -79,6 +79,7 @@ exports.verifyEmail = async (req, res) => {
   res.status(200).send();
 };
 exports.accesstoken = async (req,res) => {
+  console.log(req.headers);
   console.log(req.cookies);
   const refreshtoken = req.cookies.refreshtoken;
   if(!refreshtoken) {
