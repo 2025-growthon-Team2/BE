@@ -44,7 +44,7 @@ exports.kakaoLogin = async (req, res) => {
             nickname: kakao_account.profile.nickname,
             kakaomail: kakao_account.email
         };
-        const user = await User.findOne({ providerId: node.providerId });
+        let user = await User.findOne({ providerId: node.providerId });
         if (!user) {
             // 신규 유저
             const newUser = new User({
@@ -83,6 +83,6 @@ exports.kakaoLogin = async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).send('카카오 로그인 실패');
+        res.redirect(`http://localhost:5173/`);
     }
 };
