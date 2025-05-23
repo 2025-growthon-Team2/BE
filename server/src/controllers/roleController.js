@@ -5,7 +5,7 @@ const Post = require('../models/talent');
 const jwt = require('jsonwebtoken');
 const {JWT_SECRET,JWT_SECRET2} = require('../config/token');
 
-exports.myinfo = async (req,res) => {
+exports.myrole = async (req,res) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res.status(401).json({ error: 'MISSING_AUTHORIZATION_HEADER' });
