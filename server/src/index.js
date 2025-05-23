@@ -8,6 +8,7 @@ const authRoutes = require('./routes/auth');
 const notiRoutes = require('./routes/noti');
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/post');
+const roleRoutes = require('./routes/role');
 const { JAVASCRIPT_KEY, REDIRECT_URI } = require('./config/kakao');
 const { VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY } = require('./config/web-push');
 const { newpost,applypost,matchpost,thispost,allposts } = require('./controllers/postController');
@@ -38,6 +39,7 @@ app.use('/api/auth', authRoutes);//라우터 사용
 app.use('/api/noti', notiRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
+app.use('/api/role', roleRoutes);
 app.get('/service-worker.js', (req, res) => {//웹 알림용 js파일 전송
   res.setHeader('Content-Type', 'application/javascript');
   res.send(`

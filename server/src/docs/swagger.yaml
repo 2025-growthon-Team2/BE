@@ -301,6 +301,42 @@ paths:
                 INVALID_USERID:
                   value:
                     error: INVALID_USERID
+  /api/role/my:
+    post:
+      tags:
+        - Role
+      summary: 자신의 역할 세팅
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+      responses:
+        '200':
+          description: 저장 성공
+        '401':
+          description: INVALID_ACCESS_TOKEN
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                missing_authorization_header:
+                  value:
+                    error: MISSING_AUTHORIZATION_HEADER
+                invalid_authorization_format:
+                  value:
+                    error: INVALID_AUTHORIZATION_FORMAT
+                invalid_access_token:
+                  value:
+                    error: INVALID_ACCESS_TOKEN
   /api/post:
     post:
       summary: 글 작성
@@ -314,6 +350,8 @@ paths:
               type: object
               properties:
                 title:
+                  type: string
+                subtitle:
                   type: string
                 category:
                   type: string
@@ -523,6 +561,8 @@ paths:
                     type: string
                   title:
                     type: string
+                  subtitle:
+                    type: string
                   detailedDescription:
                     type: string
                   address:
@@ -571,6 +611,8 @@ paths:
                       type: string
                     title:
                       type: string
+                    subtitle:
+                      type: string
                     shortDescription:
                       type: string
                     appliedTalents:
@@ -609,6 +651,8 @@ paths:
                         category:
                           type: string
                         title:
+                          type: string
+                        subtitle:
                           type: string
                         shortDescription:
                           type: string
