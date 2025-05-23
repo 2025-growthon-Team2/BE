@@ -58,6 +58,7 @@ exports.kakaoLogin = async (req, res) => {
                 role: null
             });
             await newUser.save();
+            user = newUser;
         }
         // JWT 토큰 생성
         const refresh_token = jwt.sign({ id: node.providerId }, JWT_SECRET, {
@@ -71,7 +72,12 @@ exports.kakaoLogin = async (req, res) => {
             sameSite: 'None'
         });
         // 로그인 성공 후 리다이렉트
-        res.redirect(`/redirect`);
+        if(user.emailVerified) {
+          res.redirect(`localhost:5173/home`);
+        }
+        else {
+          res.redirect(`localhost:5173/role`);
+        }
 
     } catch (err) {
         console.error(err);
