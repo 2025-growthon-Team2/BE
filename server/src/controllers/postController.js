@@ -38,6 +38,8 @@ exports.newpost = async (req,res) => {
         teachAt: parsedTeachAt
     });
     await newPost.save();
+    user.writtenPosts.push(newPost._id);
+    await user.save();
     return res.status(201).json({postId: newPost._id});
   } catch (error) {
     console.log(error);
@@ -87,6 +89,8 @@ exports.matchpost = async (req,res) => {
     if(post.appliedTalents.some(id => id.equals(userId))) {
       post.matchedTalents.push(userId);
       await post.save();
+      user.appliedPosts.push(postId);
+      await user.save();
       return res.status(200).send();
     }
     else {
