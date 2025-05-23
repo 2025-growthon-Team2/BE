@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));//스웨거 세팅
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://https://gachitda.netlify.app',
   credentials: true
 }));
 app.use(cookieParser());

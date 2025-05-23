@@ -75,14 +75,14 @@ exports.kakaoLogin = async (req, res) => {
         });
         // 로그인 성공 후 리다이렉트
         if(user.emailVerified) {
-          res.redirect(`http://localhost:5173/home`);
+          res.redirect(`http://https://gachitda.netlify.app/home`);
         }
         else {
-          res.redirect(`http://localhost:5173/role`);
+          res.redirect(`http://https://gachitda.netlify.app/role`);
         }
 
     } catch (err) {
         console.error(err);
-        res.redirect(`http://localhost:5173/`);
+        res.redirect(`http://https://gachitda.netlify.app/`);
     }
 };
