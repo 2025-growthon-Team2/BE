@@ -2,7 +2,6 @@ const User = require('../models/user');
 const Post = require('../models/talent');
 const jwt = require('jsonwebtoken');
 const {JWT_SECRET,JWT_SECRET2} = require('../config/token');
-const { sendEmail } = require('./authController');
 
 exports.newpost = async (req,res) => {
   const authHeader = req.headers.authorization;
@@ -17,8 +16,8 @@ exports.newpost = async (req,res) => {
     const decode = jwt.verify(accessToken,JWT_SECRET2);
     const user = await User.findOne({providerId: decode.id});
     if(!user) return res.status(401).json({error: 'INVALID_ACCESS_TOKEN'});
-    const { title,category,shortDescription,detailedDescription,address,teachAt } = req.body;
-    if (![title, category, shortDescription, detailedDescription, address, teachAt].every(Boolean)) {
+    const { title,subtitle,category,shortDescription,detailedDescription,address,teachAt } = req.body;
+    if (![titlem,subtitle, category, shortDescription, detailedDescription, address, teachAt].every(Boolean)) {
       return res.status(400).json({ error: 'MISSING_REQUIRED_FIELDS' });
     }
     const parsedTeachAt = new Date(teachAt);
@@ -31,6 +30,7 @@ exports.newpost = async (req,res) => {
         matchedTalents: [],
         category,
         title,
+        subtitle,
         shortDescription,
         detailedDescription,
         address,
@@ -130,6 +130,7 @@ exports.thispost = async (req,res) => {
     matchedTalents,
     category: post.category,
     title: post.title,
+    subtitle: post.subtitle,
     detailedDescription: post.detailedDescription,
     address: post.address,
     status: post.status,
@@ -146,6 +147,7 @@ exports.allposts = async (req,res) => {
           writerId: post.writer,
           category: post.category, 
           title: post.title,
+          subtitle: post.subtitle,
           shortDescription: post.shortDescription,
           appliedTalents: post.appliedTalents.length,
           address: post.address,

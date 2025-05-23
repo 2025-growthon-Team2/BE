@@ -5,6 +5,7 @@ const talentSchema = new mongoose.Schema({
     matchedTalents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     category: {type: String, required: true},
     title: {type: String, required: true},
+    subtitle: {type: String, required: true},
     shortDescription: { type: String, required: true },
     detailedDescription: { type: String, required: true },
     address: { type: String, required: true },

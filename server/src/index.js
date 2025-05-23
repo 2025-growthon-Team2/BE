@@ -11,6 +11,7 @@ const postRoutes = require('./routes/post');
 const { JAVASCRIPT_KEY, REDIRECT_URI } = require('./config/kakao');
 const { VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY } = require('./config/web-push');
 const { newpost,applypost,matchpost,thispost,allposts } = require('./controllers/postController');
+const { myinfo,userdata,myposts } = require('../controllers/userController');
 const cookieParser = require('cookie-parser');
 
 
@@ -26,6 +27,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.get('/api/posts', allposts);
+app.get('/api/posts/me', myposts);
 async function main() {
   await mongoose.connect("mongodb://mongo:27017");//db연결(도커 사용)
   app.listen(PORT, '0.0.0.0', async () => {

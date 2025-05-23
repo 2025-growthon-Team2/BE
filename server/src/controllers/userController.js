@@ -84,6 +84,7 @@ exports.myposts = async (req,res) => {
             postId,
             category: post.category,
             title: post.title,
+            subtitle: post.subtitle,
             shortDescription: post.shortDescription,
             address: post.address,
             status: post.status,
