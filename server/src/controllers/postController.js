@@ -62,8 +62,13 @@ exports.applypost = async (req,res) => {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
     if(!post) return res.status(400).json({error: 'INVALID_POSTID'});
+    if(post.appliedTalents.some(id => id.equals(user._id))) {
+      return res.status(400).json({ error: 'ALREADY_APPLIED' });
+    }
     post.appliedTalents.push(user._id);
     await post.save();
+    user.appliedPosts.push(postId);
+    await user.save();
     return res.status(200).send();
   } catch (error) {
     return res.status(401).json({error:'INVALID_ACCESS_TOKEN'});
@@ -87,11 +92,9 @@ exports.matchpost = async (req,res) => {
     if(!post) return res.status(400).json({error: 'INVALID_POSTID'});
     const { users } = req.body;
       for(const userId of users) {
-      if(post.appliedTalents.some(id => id.equals(userId))) {
+      if(post.appliedTalents.some(id => id.equals(userId)) && post.appliedTalents.some(id => id.equals(userId))) {
         post.matchedTalents.push(userId);
         await post.save();
-        user.appliedPosts.push(postId);
-        await user.save();
       }
       else {
         return res.status(400).json({error:'INVALID_USERID'});

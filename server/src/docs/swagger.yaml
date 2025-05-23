@@ -466,8 +466,9 @@ paths:
               type: array
               items:
                 type: object
-                userId:
-                  type: string
+                properties:
+                  userId:
+                    type: string
       responses:
         '200':
           description: 매칭 완료
