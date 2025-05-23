@@ -11,7 +11,7 @@ const postRoutes = require('./routes/post');
 const { JAVASCRIPT_KEY, REDIRECT_URI } = require('./config/kakao');
 const { VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY } = require('./config/web-push');
 const { newpost,applypost,matchpost,thispost,allposts } = require('./controllers/postController');
-const { myinfo,userdata,myposts } = require('../controllers/userController');
+const { myinfo,userdata,myposts } = require('./controllers/userController');
 const cookieParser = require('cookie-parser');
 
 
