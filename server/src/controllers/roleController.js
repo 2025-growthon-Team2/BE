@@ -22,6 +22,7 @@ exports.myrole = async (req,res) => {
     if(!role) return res.status(400).json({error: 'INVALID_ROLE'});
     user.role = role;
     await user.save();
+    res.status(200).send();
   } catch (error) {
     return res.status(401).json({error:'INVALID_ACCESS_TOKEN'});
   }
