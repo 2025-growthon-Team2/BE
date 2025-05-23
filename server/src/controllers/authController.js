@@ -17,10 +17,10 @@ exports.sendEmail = async (req, res) => {
   if(alreadyExists) {
     return res.status(409).json({ error: 'EMAIL_ALREADY_CONNECTED' });
   }
+  */
   if (!authHeader) {
     return res.status(401).json({ error: 'MISSING_AUTHORIZATION_HEADER' });
   }
-  */
   const [type, accessToken] = authHeader.split(' ');
 
   if (type !== 'Bearer' || !accessToken) {

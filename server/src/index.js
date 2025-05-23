@@ -119,14 +119,14 @@ allow push
     if (parts.length === 2) { return parts[1].split(';')[0]; }
   }
     async function subscribeUser() {
-  const register = await navigator.serviceWorker.register('/service-worker.js');
+  const register = await navigator.serviceWorker.register('https://gachitda.corexaen.com/service-worker.js');
   const subscription = await register.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: '${VAPID_PUBLIC_KEY}'
   });
   const accessToken = getCookie('accesstoken');
   // 서버에 subscription 정보 전송
-  await fetch('/api/noti/subscription', {
+  await fetch('https://gachitda.corexaen.com/api/noti/subscription', {
     method: 'POST',
     body: JSON.stringify({accessToken,subscription}),
     headers: {
