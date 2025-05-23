@@ -744,3 +744,8 @@ paths:
                 invalid_refresh_token:
                   value:
                     error: INVALID_REFRESH_TOKEN
+  /logout:
+    post:
+      tags:
+        - Account
+      summary: 로그아웃

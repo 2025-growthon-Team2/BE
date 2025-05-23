@@ -104,3 +104,21 @@ exports.accesstoken = async (req,res) => {
     return res.status(401).json({error:'INVALID_REFRESH_TOKEN'});
   }
 };
+exports.accesstoken = async (req,res) => {
+  console.log(req.headers);
+  console.log(req.cookies);
+  const refreshtoken = req.cookies.refreshtoken;
+  if(!refreshtoken) {
+    return res.status(401).json({error:"NO_REFRESH_TOKEN"});
+  }
+  try {
+    const decode = jwt.verify(refreshtoken,JWT_SECRET);
+    const user = await User.findOne({providerId: decode.id});
+    const accessToken = jwt.sign({id: user.providerId}, JWT_SECRET2, {
+      expiresIn: '1h'
+    });
+    return res.json({token: accessToken});
+  } catch (err) {
+    return res.status(401).json({error:'INVALID_REFRESH_TOKEN'});
+  }
+};
