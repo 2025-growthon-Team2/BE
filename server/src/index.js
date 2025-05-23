@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.get('/api/posts', allposts);
 app.get('/api/posts/my', myposts);
 async function main() {
-  await mongoose.connect("mongodb://mongo:27017");//db연결(도커 사용)
+  await mongoose.connect("mongodb://localhost:27017");//db연결(도커 사용)
   app.listen(PORT, '0.0.0.0', async () => {
     console.log(`HTTPS server running at https://localhost:${PORT}`);
   });
