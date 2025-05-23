@@ -1,5 +1,5 @@
-const express = require('express');
 const path = require('path');
+const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const cors = require('cors');
@@ -16,15 +16,16 @@ const { newpost,applypost,matchpost,thispost,allposts } = require('./controllers
 const { myinfo,userdata,myposts } = require('./controllers/userController');
 const cookieParser = require('cookie-parser');
 
+const publicPath = path.join(__dirname, '..', 'public');
 
 const app = express();
-const PORT = 80;//포트
+const PORT = 80;//포트const originalGet = app.get.bind(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));//스웨거 세팅
 app.use(cors({
-  origin: 'http://https://gachitda.netlify.app',
+  origin: 'https://gachitda.netlify.app',
   credentials: true
 }));
 app.use(cookieParser());
@@ -41,7 +42,8 @@ app.use('/api/noti', notiRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/role', roleRoutes);
-//app.use(express.static(path.join(__dirname, 'build')));
+console.log('[DEBUG] publicPath =', publicPath);
+//app.use(express.static(publicPath));
 app.post('/logout', (req, res) => {
   res.clearCookie('refreshtoken', {
     httpOnly: true,
@@ -82,6 +84,13 @@ self.addEventListener('push', function(event) {
   console.log('실행됨');
   `);
 });
+console.log('[라우터 등록] * -> React fallback');
+/*
+app.get('*', (req, res) => {
+  res.sendFile(path.join(publicPath, 'index.html'));
+});
+
+/*
 app.get('/', (req, res) => {//로그인 테스트를 위한 html코드 전송
   res.send(`<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6" crossorigin="anonymous"></script>
 
@@ -145,10 +154,6 @@ allow push
   });
 }
 </script>`);
-});
-/*
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 */
 main();
