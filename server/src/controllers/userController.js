@@ -80,8 +80,12 @@ exports.myposts = async (req,res) => {
     }
     for (const postId of user.appliedPosts) {
         const post = await Post.findById(postId);
+        const writer = await User.findById(post.writer);
         appliedPosts.push({
             postId,
+            writerName: writer.nickname,
+            writerprofileimage: writer.profileimage,
+            writerEmail: writer.email,
             category: post.category,
             title: post.title,
             subtitle: post.subtitle,

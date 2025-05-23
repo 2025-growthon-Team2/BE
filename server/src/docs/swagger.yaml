@@ -673,6 +673,10 @@ paths:
                           type: string
                         writerName:
                           type: string
+                        writerprofileimage:
+                          type: string
+                        writerEmail:
+                          type: string
                         category:
                           type: string
                         title:
