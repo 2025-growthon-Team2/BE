@@ -355,7 +355,7 @@ paths:
                   type: string
                 category:
                   type: string
-                detailedDescription:
+                Description:
                   type: string
                 address:
                   type: string
@@ -561,7 +561,7 @@ paths:
                     type: string
                   subtitle:
                     type: string
-                  detailedDescription:
+                  Description:
                     type: string
                   address:
                     type: string

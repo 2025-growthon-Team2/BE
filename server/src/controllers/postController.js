@@ -16,8 +16,8 @@ exports.newpost = async (req,res) => {
     const decode = jwt.verify(accessToken,JWT_SECRET2);
     const user = await User.findOne({providerId: decode.id});
     if(!user) return res.status(401).json({error: 'INVALID_ACCESS_TOKEN'});
-    const { title,subtitle,category,detailedDescription,address,teachAt } = req.body;
-    if (![title,subtitle, category, detailedDescription, address, teachAt].every(Boolean)) {
+    const { title,subtitle,category,Description,address,teachAt } = req.body;
+    if (![title,subtitle, category, Description, address, teachAt].every(Boolean)) {
       return res.status(400).json({ error: 'MISSING_REQUIRED_FIELDS' });
     }
     const parsedTeachAt = new Date(teachAt);
@@ -31,7 +31,7 @@ exports.newpost = async (req,res) => {
         category,
         title,
         subtitle,
-        detailedDescription,
+        Description,
         address,
         status : "",
         createdAt: new Date(),
@@ -135,7 +135,7 @@ exports.thispost = async (req,res) => {
     category: post.category,
     title: post.title,
     subtitle: post.subtitle,
-    detailedDescription: post.detailedDescription,
+    Description: post.Description,
     address: post.address,
     status: post.status,
     createdAt: post.createdAt,
