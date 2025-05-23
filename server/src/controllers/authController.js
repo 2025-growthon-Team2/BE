@@ -53,6 +53,7 @@ exports.sendEmail = async (req, res) => {
   }
 };
 exports.verifyEmail = async (req, res) => {
+  console.log(req.body);
   const { code } = req.body;
   const authHeader = req.headers.authorization;
 
