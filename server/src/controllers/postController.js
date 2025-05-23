@@ -92,7 +92,7 @@ exports.matchpost = async (req,res) => {
     if(!post) return res.status(400).json({error: 'INVALID_POSTID'});
     const users = req.body;
     console.log(users);
-    for(const userId of users) {
+    for(const {userId} of users) {
       if(post.appliedTalents.some(id => id.equals(userId)) && !post.matchedTalents.some(id => id.equals(userId))) {
         post.matchedTalents.push(userId);
         await post.save();
