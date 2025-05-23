@@ -99,8 +99,9 @@ exports.matchpost = async (req,res) => {
 };
 exports.thispost = async (req,res) => {
   const postId = req.params.postId;
+  let post;
   try {
-    const post = await Post.findById(postId);
+    post = await Post.findById(postId);
     if(!post) return res.status(400).json({error:'INVALID_POSTID'});
   } catch (err) {
     return res.status(400).json({error:'INVALID_POSTID'});
