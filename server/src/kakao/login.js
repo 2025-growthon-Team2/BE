@@ -73,10 +73,10 @@ exports.kakaoLogin = async (req, res) => {
         });
         // 로그인 성공 후 리다이렉트
         if(user.emailVerified) {
-          res.redirect(`localhost:5173/home`);
+          res.redirect(`http://localhost:5173/home`);
         }
         else {
-          res.redirect(`localhost:5173/role`);
+          res.redirect(`http://localhost:5173/role`);
         }
 
     } catch (err) {

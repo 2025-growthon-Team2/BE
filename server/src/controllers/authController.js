@@ -34,14 +34,14 @@ exports.sendEmail = async (req, res) => {
   try {
     const decode = jwt.verify(accessToken,JWT_SECRET2);
     const user = await User.findOne({providerId: decode.id});
-    if(!user) return res.status(400).json({error: 'INVALID_ACCESS_TOKEN'});
+    if(!user) return res.status(401).json({error: 'INVALID_ACCESS_TOKEN'});
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
     await User.updateOne(
       {providerId: decode.id},
       {$set:{email:email,code: code,expiresAt: expiresAt}}
     )
   } catch (err) {
-    return res.status(400).json({error:'INVALID_ACCESS_TOKEN'});
+    return res.status(401).json({error:'INVALID_ACCESS_TOKEN'});
   }
   try {
     await sendVerificationEmail(email, code);
