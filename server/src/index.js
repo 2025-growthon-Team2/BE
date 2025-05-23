@@ -43,7 +43,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/role', roleRoutes);
 console.log('[DEBUG] publicPath =', publicPath);
-//app.use(express.static(publicPath));
+app.use(express.static(publicPath));
 app.post('/logout', (req, res) => {
   res.clearCookie('refreshtoken', {
     httpOnly: true,
@@ -85,8 +85,8 @@ self.addEventListener('push', function(event) {
   `);
 });
 console.log('[라우터 등록] * -> React fallback');
-/*
-app.get('*', (req, res) => {
+
+app.get(/^\/(?!api\/|service-worker\.js).*/, (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
 
