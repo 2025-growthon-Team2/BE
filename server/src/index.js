@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const cors = require('cors');
@@ -41,7 +40,6 @@ app.use('/api/noti', notiRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/role', roleRoutes);
-app.use(express.static(path.join(__dirname, 'build')));
 app.get('/service-worker.js', (req, res) => {//웹 알림용 js파일 전송
   res.setHeader('Content-Type', 'application/javascript');
   res.send(`
@@ -138,7 +136,5 @@ allow push
 }
 </script>`);
 });
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+
 main();
