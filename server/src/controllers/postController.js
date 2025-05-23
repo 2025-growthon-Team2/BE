@@ -85,16 +85,18 @@ exports.matchpost = async (req,res) => {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
     if(!post) return res.status(400).json({error: 'INVALID_POSTID'});
-    const { userId } = req.body;
-    if(post.appliedTalents.some(id => id.equals(userId))) {
-      post.matchedTalents.push(userId);
-      await post.save();
-      user.appliedPosts.push(postId);
-      await user.save();
+    const { users } = req.body;
+      for(const userId of users) {
+      if(post.appliedTalents.some(id => id.equals(userId))) {
+        post.matchedTalents.push(userId);
+        await post.save();
+        user.appliedPosts.push(postId);
+        await user.save();
+      }
+      else {
+        return res.status(400).json({error:'INVALID_USERID'});
+      }
       return res.status(200).send();
-    }
-    else {
-      return res.status(400).json({error:'INVALID_USERID'});
     }
   } catch (error) {
     return res.status(401).json({error:'INVALID_ACCESS_TOKEN'});

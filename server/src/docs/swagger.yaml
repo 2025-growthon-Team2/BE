@@ -463,8 +463,8 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
+              items:
+                type: object
                 userId:
                   type: string
       responses:
