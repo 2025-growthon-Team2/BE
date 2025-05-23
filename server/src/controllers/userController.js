@@ -18,11 +18,15 @@ exports.myinfo = async (req,res) => {
     const decode = jwt.verify(accessToken,JWT_SECRET2);
     const user = await User.findOne({providerId: decode.id});
     if(!user) return res.status(401).json({error: 'INVALID_ACCESS_TOKEN'});
+    let role = user.role;
+    if(!role) {
+      role = "";
+    }
     res.status(200).json({
       nickname: user.nickname,
       profileimage: user.profileimage,
       email: user.email,
-      role: user.role,
+      role,
       subscription: user.subscription != null
     });
   } catch (error) {
@@ -58,25 +62,25 @@ exports.myposts = async (req,res) => {
     if(!user) return res.status(401).json({error: 'INVALID_ACCESS_TOKEN'});
     const writtenPosts = [];
     const appliedPosts = [];
-    user.writtenPosts.forEach(async postId => {
-        const post = await Post.findById(postId);
-        writtenPosts.push({
-            postId,
-            category: post.category, 
-            title: post.title,
-            shortDescription: post.shortDescription,
-            appliedTalents: post.appliedTalents.length,
-            address: post.address,
-            status: post.status,
-            createdAt: post.createdAt,
-            teachAt: post.teachAt
-        });
-    });
-    user.appliedPosts.forEach(async postId => {
+    for (const postId of user.writtenPosts) {
+      const post = await Post.findById(postId);
+      writtenPosts.push({
+          postId,
+          category: post.category,
+          title: post.title,
+          shortDescription: post.shortDescription,
+          appliedTalents: post.appliedTalents.length,
+          address: post.address,
+          status: post.status,
+          createdAt: post.createdAt,
+          teachAt: post.teachAt
+      });
+    }
+    for (const postId of user.appliedPosts) {
         const post = await Post.findById(postId);
         appliedPosts.push({
             postId,
-            category: post.category, 
+            category: post.category,
             title: post.title,
             shortDescription: post.shortDescription,
             address: post.address,
@@ -84,7 +88,7 @@ exports.myposts = async (req,res) => {
             createdAt: post.createdAt,
             teachAt: post.teachAt
         });
-    });
+    }
     res.status(200).json({writtenPosts,appliedPosts});
   } catch (error) {
     return res.status(401).json({error:'INVALID_ACCESS_TOKEN'});

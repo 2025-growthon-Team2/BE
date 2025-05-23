@@ -37,7 +37,7 @@ exports.kakaoLogin = async (req, res) => {
 
         // 유저 정보
         const kakao_account = userResponse.data.kakao_account;
-        console.log(userResponse);
+        console.log(kakao_account);
         const node = {
             providerId: userResponse.data.id,
             profileimage: kakao_account.profile.profile_image_url,

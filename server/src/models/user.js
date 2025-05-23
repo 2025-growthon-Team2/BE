@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     providerId: { type: String, required: true },
+    kakaomail: {type: String, required: true},
     profileimage: { type: String },
     nickname: { type: String },
     email: { type: String },
