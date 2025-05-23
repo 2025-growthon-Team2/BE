@@ -6,7 +6,6 @@ const talentSchema = new mongoose.Schema({
     category: {type: String, required: true},
     title: {type: String, required: true},
     subtitle: {type: String, required: true},
-    shortDescription: { type: String, required: true },
     detailedDescription: { type: String, required: true },
     address: { type: String, required: true },
     status: {type: String},

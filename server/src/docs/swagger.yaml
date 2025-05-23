@@ -355,8 +355,6 @@ paths:
                   type: string
                 category:
                   type: string
-                shortDescription:
-                  type: string
                 detailedDescription:
                   type: string
                 address:
@@ -613,8 +611,6 @@ paths:
                       type: string
                     subtitle:
                       type: string
-                    shortDescription:
-                      type: string
                     appliedTalents:
                       type: integer
                     address:
@@ -654,8 +650,6 @@ paths:
                           type: string
                         subtitle:
                           type: string
-                        shortDescription:
-                          type: string
                         appliedTalents:
                           type: integer
                         address:
@@ -680,8 +674,6 @@ paths:
                         category:
                           type: string
                         title:
-                          type: string
-                        shortDescription:
                           type: string
                         address:
                           type: string
