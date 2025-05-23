@@ -70,6 +70,7 @@ exports.myposts = async (req,res) => {
           postId,
           category: post.category,
           title: post.title,
+          subtitle: post.subtitle,
           appliedTalents: post.appliedTalents.length,
           address: post.address,
           status: post.status,
