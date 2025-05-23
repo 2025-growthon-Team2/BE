@@ -41,13 +41,15 @@ exports.kakaoLogin = async (req, res) => {
         const node = {
             providerId: userResponse.data.id,
             profileimage: kakao_account.profile.profile_image_url,
-            nickname: kakao_account.profile.nickname
+            nickname: kakao_account.profile.nickname,
+            kakaomail: kakao_account.email
         };
         const user = await User.findOne({ providerId: node.providerId });
         if (!user) {
             // 신규 유저
             const newUser = new User({
                 providerId: node.providerId,
+                kakaomail: node.kakaomail,
                 profileimage: node.profileimage,
                 nickname: node.nickname,
                 email: null,

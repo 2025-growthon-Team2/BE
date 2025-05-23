@@ -25,6 +25,7 @@ exports.myinfo = async (req,res) => {
     res.status(200).json({
       nickname: user.nickname,
       profileimage: user.profileimage,
+      kakaomail: user.kakaomail,
       email: user.email,
       role,
       subscription: user.subscription != null
@@ -41,7 +42,8 @@ exports.userdata = async (req,res) => {
     res.status(200).json({
       nickname: user.nickname,
       profileimage: user.profileimage,
-      email: user.email,
+      kakaomail: user.kakaomail,
+      email: user.email
     });
   } catch (error) {
     return res.status(400).json({error:'INVALID_USERID'});

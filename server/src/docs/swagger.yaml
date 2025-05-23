@@ -233,6 +233,8 @@ paths:
                     type: string
                   profileimage:
                     type: string
+                  kakaomail:
+                    type: string
                   email:
                     type: string
                   role:
@@ -281,6 +283,8 @@ paths:
                   nickname:
                     type: string
                   profileimage:
+                    type: string
+                  kakaomail:
                     type: string
                   email:
                     type: string
